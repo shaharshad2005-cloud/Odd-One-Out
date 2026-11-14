@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Odd One Out</title>
+<style>
+:root{--bg:#f4f1ff;--card:#fff;--tx:#1d1b2e;--mu:#6b6880;--ac:#6c4cf5;--ac2:#ff5d8f;--bd:#e2ddf5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13111d;--card:#1f1c30;--tx:#f1eeff;--mu:#a29fba;--ac:#8d73ff;--ac2:#ff6f9c;--bd:#322e4a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#13111d;--card:#1f1c30;--tx:#f1eeff;--mu:#a29fba;--ac:#8d73ff;--ac2:#ff6f9c;--bd:#322e4a;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center}
+main{width:100%;max-width:440px;padding:18px 16px 40px}
+.hero{text-align:center;padding:18px 10px;border-radius:22px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;margin-bottom:16px}
+.hero h1{margin:0;font-size:28px}.hero p{margin:4px 0 0;font-size:13px;opacity:.9}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:14px}
+.t{font-size:12px;color:var(--mu);display:block;margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cnt{font-size:30px;font-weight:800}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 16px;font-weight:700;color:#fff;background:var(--ac);width:100%;transition:transform .1s}
+button:active{transform:scale(.97)}
+button.sm{width:52px;height:52px;padding:0;font-size:26px}
+button.alt{background:var(--bg);color:var(--tx);border:1.5px solid var(--bd)}
+button.sel{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.pink{background:var(--ac2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g2 button{text-align:left;padding:12px}.g2 small{display:block;font-weight:500;opacity:.75;font-size:11px;margin-top:2px}
+input{font:inherit;width:100%;padding:11px 12px;margin-bottom:8px;border-radius:12px;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx)}
+.big{text-align:center;padding:30px 16px}.big h2{margin:8px 0 6px;font-size:26px}
+.av{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 10px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.av.s{width:46px;height:46px;font-size:24px;margin:0;flex:none}
+.word{font-size:32px;font-weight:800;text-align:center;margin:4px 0 2px}
+.show{text-align:center;color:var(--mu);font-size:13px;margin-bottom:14px}
+.clue{background:var(--bg);border-radius:12px;padding:11px 12px;margin:8px 0;line-height:1.35;border-left:4px solid var(--ac)}
+.sub,.note{color:var(--mu);font-size:13px;text-align:center;margin:6px 0 12px}
+.vlist{display:grid;gap:8px}
+.vlist button{display:flex;align-items:center;gap:12px;text-align:left}
+.bar{height:10px;border-radius:9px;background:var(--ac2);margin-top:5px;min-width:4px}
+.res{text-align:center}.res .w{font-size:22px;font-weight:800;margin-bottom:8px}
+.ok{color:#1fa971}.bad{color:var(--ac2)}
+.oddbox{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-radius:16px;padding:14px;margin:6px 0 16px;box-shadow:0 6px 18px rgba(0,0,0,.2)}.oddbox small{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.9}.oddbox b{display:block;font-size:30px;font-weight:900;margin-top:4px;word-break:break-word}</style></head><body><main id="app"></main>
+<script>
+// [category, emoji, show, "Name|clue|clue|clue", ...]
+const D=[
+["anime","🐉","Dragon Ball Z","Piccolo|Dusre planet ka green yodha|Cape aur pagdi pehnta hai|Hero ke bete ko train kiya","Vegeta|Ghamandi yodha prince|Khade baal aur armor|Hero ka sabse bada rival","Beerus|Vinash ka devta|Aalsi billi jaisa god|Khane ka shaukeen","Frieza|Space ka tyrant|Alag alag forms leta hai|Ek poora planet uda diya"],
+["anime","🍥","Naruto","Itachi|Laal aankhon wala genius|Ek raat clan chhod diya|Kauwe uske saath rehte hain","Kakashi|Mask wala teacher|Dusron ki moves copy karta hai|Hamesha kitaab padhta hai","Sasuke|Laal aankhon wala badla lene wala|Bijli wale attacks|Hero ka rival","Madara|Purane clan ka legend|War fan chalata hai|Duniya ko illusion banana chahta hai"],
+["anime","⚔️","Attack on Titan","Levi|Chhota par sabse khatarnak soldier|Safai ka pagal|Elite squad ka captain","Mikasa|Laal scarf pehanti hai|Top fighter|Bahut protective","Eren|Garam dimag ka soldier|Titan ban sakta hai|Azaadi chahta hai","Armin|Gora aur sharmila|Kamaal ka planner|Leader ban gaya"],
+["anime","🗡️","Demon Slayer","Zenitsu|Darpok aur neend mein rehta hai|Bijli jaisi speed|Peela haori","Inosuke|Suar ka mask pehanta hai|Junglee, shirt nahi|Dono taraf tez talwaar","Tanjiro|Maathe pe nishaan|Paani wali breathing|Behen ko saath rakhta hai","Nezuko|Bamboo muzzle|Demon behen|Apna size badal sakti hai"],
+["anime","🏴‍☠️","One Piece","Zoro|Teen talwaar chalata hai|Rasta bhool jaata hai|Hamesha sota rehta hai","Sanji|Ship ka cook|Sirf laat se ladta hai|Cigarette peeta hai","Luffy|Rubber jaisa body|Straw hat pehanta hai|Meat ka deewana","Shanks|Laal baal|Ek haath kho diya|Captain ka inspiration"],
+["anime","👁️","Jujutsu Kaisen","Gojo|Aankhon pe patti wala teacher|Sabse strong sorcerer|Mithai ka shaukeen","Sukuna|Curses ka raja|Chaar haath hain|Krur aur ghamandi","Megumi|Khade baal wala student|Parchhai se summon karta hai|Kutte jaise shadows","Nobara|Hathoda aur keelein|Fashion wali ladki|Gudiya wali technique"],
+["anime","📓","Death Note","L|Genius detective|Ukdu baith ke sochta hai|Hamesha meetha khata hai","Light|Topper se killer bana|Naam likhta hai|Nayi duniya banana chahta hai","Ryuk|Maut ka devta|Seb ka deewana|Bore aur maze mein rehta hai","Rem|Shinigami ladki|Misa ki raksha karti hai|Dosti ke liye kuch bhi"],
+["cartoon","🔔","Doraemon","Gian|Class ka bully|Bura gaata hai|Behen se pyaar karta hai","Suneo|Ameer shekhibaaz|Nokdaar baal|Hamesha ghamand dikhata hai","Nobita|Kamzor, chashme wala student|Seconds mein so jaata hai|Hamesha gadget maangta hai","Shizuka|Meethi aur tameez wali ladki|Bath aur shakarkandi pasand|Violin bajati hai"],
+["cartoon","⌚","Ben 10","Heatblast|Aag wala alien|Pathar jaisa body aur flames|Cheezein jala deta hai","Diamondhead|Crystal alien|Tez shards phenkta hai|Bahut sakht body","Four Arms|Laal taqatwar alien|Extra haath|Sab kuch tod deta hai","XLR8|Neela speed wala|Raptor jaisa|Bahut tez bhaagta hai"],
+["cartoon","🍫","Shinchan","Shinchan|Paanch saal ka sharaarti|Chocobi ka fan|Funny dance karta hai","Kazama|Neat aur tameezdar|Elite banna chahta hai|Dost se chid jaata hai","Masao|Sharmila aur darpok|Jaldi ro deta hai|Sabka target","Nene|Khargosh gudiya ki deewani|Masao pe strict|Pyaari classmate"],
+["cartoon","⚡","Pokemon","Pikachu|Bijli wala chuha|Laal gaal|Trainer ka best friend","Eevee|Lomdi jaisa|Kai evolutions|Naram bhura fur","Charizard|Aag wala dragon|Poonch pe flame|Fully evolved","Mewtwo|Clone kiya hua psychic|Legendary|Bahut taqatwar"],
+["cartoon","🍡","Chhota Bheem","Bheem|Gaon ka taqatwar ladka|Laddoo pasand|Dholakpur ki raksha karta hai","Kalia|Pehalwan bully|Bheem ka rival|Zor se bolta hai","Chutki|Himmatwali ladki|Acha khana banati hai|Bheem ki dost","Raju|Chhota bachcha|Jaldi dar jaata hai|Hamesha hero ke saath"],
+["cartoon","🥟","Motu Patlu","Motu|Gol mol aur bhookha|Samose ka deewana|Khane se taqat milti hai","Patlu|Patla, chashma pehanta hai|Smart plans banata hai|Motu ka dost","John the Don|Gangster|Brown suit|Hamesha haar jaata hai","Dr Jhatka|Pagal scientist|Ulte seedhe inventions|Experiments ka shaukeen"],
+["cartoon","🦈","Zig & Sharko","Zig|Machhli chahne wala hyena|Tricks aur gags|Aksar ulta fas jaata hai","Sharko|Muscular shark|Mermaid ki raksha|Hyena se ladta hai","Marina|Shaant mermaid|Music pasand|Dayalu","Bernie|Kekda|Hamesha chidchida|Samundar ka padosi"],
+["cartoon","🥷","Ninja Hattori","Hattori|Chhota ninja|Neela outfit|Ninja tricks karta hai","Kemumaki|Rival ninja|Billi jaisa|Hamesha saazish karta hai","Shinzo|Chhota bhai|Chipku aur cute|Bhai ki nakal karta hai","Kenichi|Hattori ka dost|Aalsi aur sharaarti|Musibat mein padta hai"],
+["cartoon","🐭","Tom & Jerry","Jerry|Chhota chuha|Cheese pasand|Bahut chalaak","Tuffy|Chhota grey chuha|Cute aur shor machata hai|Jerry ka rishtedar","Tom|Billi|Chuhe ke peeche bhaagta hai|Hamesha haarta hai","Spike|Bada bulldog|Bete ki raksha karta hai|Gussa jaldi aata hai"],
+["cartoon","🧒","Cartoon Kids","Hagemaru|Gareeb par khush ladka|Chhote ghar mein rehta hai|Kuch bhi kha leta hai","Shinchan|Sharaarti paanch saal ka|Chocobi pasand|Funny dance","Nobita|Kamzor student|Jaldi so jaata hai|Gadget ki madad leta hai","Kenichi|Aalsi bachcha|Ninja ke saath rehta hai|Musibat mein padta hai"],
+["things","🥛","Dairy","Curd|Jama hua|Khatta swaad|Khane ke saath","Buttermilk|Patli aur namkeen|Thanda peete hain|Bhaari khane ke baad","Milk|Safed drink|Janwar se milta hai|Packet mein aata hai","Lassi|Gadhi aur meethi|Glass mein milti hai|Garmi ka favourite"],
+["things","☕","Drinks","Tea|Patti wala garam drink|Subah ki aadat|Biscuit ke saath","Coffee|Bhuna hua beans|Neend bhagata hai|Tez khushboo","Hot Chocolate|Meetha aur garam|Cocoa se bane|Sardi ka favourite"],
+["things","✏️","Stationery","Pen|Syahi se likhta hai|Exam mein use hota hai|Cap ya click","Pencil|Mita sakte hain|Lakdi ki body|Chheelna padta hai","Marker|Mote bold lines|Board pe use hota hai|Tez smell"],
+["things","🚆","Transport","Bus|Bahut seats|Sadak pe chalti hai|Conductor hota hai","Train|Patri pe chalti hai|Dibbe hote hain|Station pe rukti hai","Metro|Sirf sheher mein|Zameen ke neeche ya upar|Card ya token"],
+["things","📱","Gadgets","Phone|Jeb mein aata hai|Screen hai|Call aur apps","Tablet|Bada touchscreen|Padhne ke liye acha|Keyboard nahi","Laptop|Khulta hai|Keyboard hota hai|Desk pe kaam"],
+["things","🍎","Fruits","Apple|Laal ya hara|Kurkura|Doctor ko door rakhta hai","Orange|Chhilka aur faanken|Khatta meetha|Vitamin C se bhara","Mango|Garmi ka raja|Meetha aur rasila|Andar badi guthli","Banana|Peela chhilka|Andar naram|Gucche mein ugta hai"],
+["things","🥟","Snacks","Samosa|Teen kone|Masaledar aloo|Tala hua","Pakora|Kurkure bhajiye|Besan|Baarish mein best","Chips|Patli aur namkeen|Packet mein|Kurkure","Popcorn|Garmi se phootta hai|Movie time|Halka aur fula hua"],
+["things","🍬","Sweets","Gulab Jamun|Gol aur naram|Chashni mein duba|Garam parosa jaata hai","Rasgulla|Safed aur spongy|Halki chashni|Bengal ki shaan","Jalebi|Narangi gol gol|Chipchipi aur kurkuri|Garam khate hain","Laddoo|Gola|Tyohaar ki mithai|Ghee se bana"],
+["things","🏍️","Two Wheelers","Bike|Engine wali|Tez aur shor|Petrol chahiye","Scooter|Pair rakhne ki jagah|Chhote pahiye|City ke liye easy","Cycle|Pedal se chalti hai|Fuel nahi|Acha exercise"],
+["things","🥄","Kitchen","Spoon|Gol scoop|Soup peene ke liye|Steel ya plastic","Ladle|Gehri katori|Lamba handle|Sabzi parosta hai","Fork|Kaante wala|Noodles uthata hai|Table pe use hota hai","Tongs|Garam cheez pakadta hai|Do haath|Roti ke saath"],
+["things","🍕","Fast Food","Pizza|Gol aur cheesy|Slices mein kata|Baked","Pasta|Pani mein ubalta hai|Sauce ke saath|Italian","Burger|Bun mein patty|Haath se khate hain|Fries ke saath","Sandwich|Bread slices|Andar filling|Jaldi lunch"],
+["things","🦁","Big Cats","Lion|Yaal hai|Pride mein rehta hai|Zor ki dahaad","Tiger|Narangi aur dhaariyan|Akela rehta hai|Paani pasand","Leopard|Dhabbedaar khaal|Ped pe chadhta hai|Chupke se shikaar"],
+["things","👟","Footwear","Shoe|Fite ya velcro|Poora band|Sports ke liye","Slipper|Pehanna aasan|Chappal flat aur naram|Ghar mein use","Sandal|Khula design|Straps|Garmi ke liye"],
+["things","🌧️","Weather","Rain|Aasman se paani|Gaddhe bharte hain|Chhata chahiye","Fog|Neeche baadal|Dikhai kam deta hai|Thandi subah","Storm|Bijli aur hawa|Kala aasman|Shor aur darr"],
+["things","❄️","Cooling","Fan|Chhat pe ghoomta hai|Hawa deta hai|Sasta aur common","Cooler|Andar paani|Sukhi garmi mein chalta hai|Portable","AC|Kamra thanda karta hai|Remote hota hai|Bill zyada"],
+["anime","🥷","Theme: Ninjas","Itachi|Laal aankhon wala genius|Ek raat clan chhod diya|Kauwe uske saath rehte hain","Sasuke|Laal aankhon wala badla lene wala|Bijli wale attacks|Hero ka rival","Naruto|Pet mein nau poonch wala fox sealed|Hokage banna sapna|Orange kapde","Hattori|Chhota ninja|Neela outfit|Ninja tricks karta hai"],
+["anime","💥","Theme: Overpowered","Goku|Earth pe pala Saiyan|Ladna aur khana pasand|Narangi kapde","Saitama|Ganja hero|Ek punch mein jeet|Aasan fights se bore","Gojo|Patti wala teacher|Sabse strong sorcerer|Mithai pasand","Beerus|Vinash ka devta|Aalsi, billi jaisa|Khana pasand"],
+["anime","🧠","Theme: Masterminds","L|Genius detective|Ukdu baithta hai|Meetha khata hai","Light|Topper se killer|Naam likhta hai|Nayi duniya chahta hai","Lelouch|Nikala hua prince|Dimag kaabu karne wali aankh|Mask wala rebel leader","Conan|Bachche ke body mein detective|Goli se chhota hua|Kehta hai sach ek hi hota hai"],
+["anime","🗡️","Theme: Swordsmen","Zoro|Teen talwaar chalata hai|Rasta bhool jaata hai|Hamesha sota rehta hai","Ichigo|Narangi baal|Bahut badi talwaar|Spirit guide","Tanjiro|Maathe pe nishaan|Paani wali breathing|Behen ko saath rakhta hai","Giyu|Water Hashira|Chup aur akela|Aadha haori","Kenshin|Ulti dhaar ki talwaar|Gaal pe nishaan|Pehle assassin tha","Levi|Chhota par sabse khatarnak soldier|Safai ka pagal|Elite squad ka captain"],
+["cartoon","🐾","Theme: Cute Companions","Pikachu|Bijli wala chuha|Laal gaal|Trainer ka best friend","Chopper|Chhota reindeer doctor|Cotton candy pasand|Hat pe pink","Jerry|Chhota chuha|Cheese pasand|Bahut chalaak","Shiro|Safed kutta|Cotton jaisa|Vafadaar"],
+["anime","😤","Theme: Rivals & Bullies","Vegeta|Ghamandi yodha prince|Khade baal aur armor|Hero ka sabse bada rival","Sasuke|Laal aankhon wala badla lene wala|Bijli wale attacks|Hero ka rival","Kalia|Pehalwan bully|Bheem ka rival|Zor se bolta hai","Gian|Class ka bully|Bura gaata hai|Behen se pyaar karta hai"],
+["cartoon","🍖","Theme: Hungry Heroes","Luffy|Rubber body|Straw hat|Meat pasand","Goku|Saiyan|Bahut khana khata hai|Narangi kapde","Motu|Gol aur bhookha|Samose pasand|Khane se taqat","Bheem|Gaon ka taqatwar ladka|Laddoo pasand|Gaon ki raksha"],
+["anime","🎓","Theme: Mentors","Kakashi|Mask wala teacher|Moves copy karta hai|Hamesha padhta hai","Gojo|Patti wala teacher|Sabse strong sorcerer|Mithai pasand","Jiraiya|Ghoomta hua toad master|Safed khade baal|Novel likhta hai","Roshi|Boodha kachua hermit|Chashma pehanta hai|Martial arts sikhata hai"],
+["anime","😈","Theme: Villains","Frieza|Space tyrant|Forms badalta hai|Ek planet uda diya","Muzan|Peela demon raja|Demons banata hai|Raat mein chhupta hai","Sukuna|Curses ka raja|Chaar haath|Krur aur ghamandi","Madara|Purane clan ka legend|War fan|Duniya illusion banana chahta hai"],
+["anime","💪","Theme: Strong Girls","Mikasa|Laal scarf|Top fighter|Protective","Nobara|Hathoda aur keelein|Fashion wali|Gudiya technique","Chutki|Himmatwali gaon ki ladki|Acha khana banati hai|Strong ladke ki dost","Sakura|Gulabi baal|Zabardast punch|Medical ninja"],
+["cartoon","🤓","Theme: Smart Sidekicks","Armin|Gora aur sharmila|Kamaal ka planner|Leader ban gaya","Patlu|Patla, chashma|Plans banata hai|Wafadaar dost","Kazama|Neat aur tameezdar|Elite banna chahta hai|Dosto se chid","Raju|Chhota bachcha|Jaldi darr jaata hai|Hamesha hero ke saath"],
+["anime","🐉","Dragon Ball Z","Gohan|Goku ka bada beta|Padhai pasand, gusse mein bahut taqatwar|Great Saiyaman ban jaata hai","Trunks|Future se aaya|Lambi talwaar|Vegeta ka beta","Cell|Bug jaisa bio-android|Dusron ko absorb karta hai|Perfect form chahta hai","Majin Buu|Gulabi aur gol|Insaan ko candy bana deta hai|Bachchon jaisa khilandar"],
+["anime","🍥","Naruto","Naruto|Pet mein nau poonch wala fox sealed|Hokage banna sapna|Orange kapde","Minato|Peele baalon wala Hokage|Flash jaisi speed|Naruto ka pita","Jiraiya|Toad sage|Safed lambe baal|Kitab likhta hai","Tsunade|Gambling ki shaukeen|Zabardast medical ninja|Sirf ek punch se zameen phaad deti hai"],
+["anime","🍥","Naruto","Sakura|Gulabi baal|Strength punch|Medical ninja","Ino|Blonde ponytail|Dimaag ghusane wali technique|Phoolon ki dukaan","Hinata|Sharmili aur gentle|Byakugan|Hero ko pasand karti hai","Tenten|Hathiyaaron ki expert|Do buns|Kunai aur scrolls"],
+["anime","🍥","Naruto","Neji|Byakugan wala genius|Lamba kaala baal|Hyuga clan","Shikamaru|Aalsi par genius|Shadow technique|Hamesha cloud dekhta hai","Rock Lee|Bowl cut|Sirf taijutsu|Hari jumpsuit","Gaara|Ret ka control|Laal baal aur gourd|Pehle akela aur khatarnak"],
+["anime","🍥","Naruto","Pain|Akatsuki ka leader|Orange baal aur piercings|Rinnegan","Obito|Mask wala Uchiha|Kamui se gayab|Purani dosti ka dard","Orochimaru|Saanp jaisi aankhein|Amar hona chahta hai|Sannin","Kisame|Shark jaisa|Bahut badi talwaar|Akatsuki member"],
+["anime","🏴‍☠️","One Piece","Nami|Navigator|Paise ki deewani|Orange baal","Robin|Archaeologist|Haath kai jagah ug jaate hain|Lambe kaale baal","Usopp|Lambi naak|Slingshot sniper|Jhooth bolne mein maahir","Chopper|Chhota reindeer doctor|Cotton candy pasand|Hat pe pink"],
+["anime","🏴‍☠️","One Piece","Ace|Aag chalane wala|Luffy ka bhai|Freckles aur topless","Sabo|Revolutionary army|Top hat aur blue coat|Luffy ka bhai","Law|Surgeon of Death|Room technique|Lambi talwaar aur topi","Kid|Laal baal aur metal haath|Magnet power|Pirate captain"],
+["anime","🏴‍☠️","One Piece","Kaido|Dragon bankar udta hai|Beasts Pirates ka leader|Sharab pasand","Big Mom|Mithai ki deewani|Bahut badi aur ghussa|Yonko","Blackbeard|Do devil fruits|Kaala daadhi|Dhokebaaz","Crocodile|Hook haath|Ret ka power|Cigar peeta hai"],
+["anime","🗡️","Demon Slayer","Shinobu|Butterfly girl|Zeher se ladti hai|Hamesha muskurati hai","Mitsuri|Gulabi baal|Love Hashira|Bahut khaana","Tengen|Sound Hashira|Show-off|Teen biwiyan","Rengoku|Aag wala pillar|Zor se bolta hai, khush rehta hai|Bento box ka fan"],
+["anime","🗡️","Demon Slayer","Akaza|Neele pattern wala demon|Hand-to-hand fight|Upper Moon 3","Kokushibo|Chhah aankhon wala|Moon breathing|Upper Moon 1","Doma|Hamesha muskurata hai|Ice powers|Upper Moon 2","Muzan|Peela raja|Demons banata hai|Raat mein chhupta hai"],
+["anime","⚔️","Attack on Titan","Erwin|Commander|Bade bhaashan|Blond baal","Hange|Titan ki deewani|Chashma aur ponytail|Pagal scientist","Jean|Ghode jaisa chehra|Mikasa pe fida|Dost ban gaya","Sasha|Potato girl|Khane ki deewani|Tez teer"],
+["anime","⚔️","Attack on Titan","Reiner|Armored titan|Bada aur strong|Warrior","Bertholdt|Colossal titan|Lamba aur shaant|Darpok","Annie|Female titan|Neeli aankhein|Crystal mein band","Zeke|Beast titan|Chashma aur daadhi|Eren ka bhai"],
+["anime","👁️","Jujutsu Kaisen","Maki|Weapons ki expert|Chashma aur ponytail|Zero curse energy","Toge|Sirf onigiri bolta hai|Cursed speech|Collar pehanta","Yuji|Sukuna ka vessel|Pink baal|Bahut taqatwar","Panda|Bear jaisa student|Curse hai par pyaara|Gorilla mode"],
+["anime","👁️","Jujutsu Kaisen","Nanami|Suit pehna sorcerer|Overtime se nafrat|Blonde aur chashma","Geto|Lambe baal aur bun|Curses ko kaabu karta hai|Gojo ka purana dost","Mahito|Neela chehra|Souls ko tod deta hai|Curse ka kaarigar","Jogo|Aag wala curse|Volcano jaisa sir|Garam gussa"],
+["anime","☘️","Black Clover","Asta|Anti-magic sword|Chillata hai|Magic nahi hai","Yami|Black Bulls ka captain|Kaali talwaar|Dark magic","Yuno|Hawa wala prodigy|Chaar patti ka clover|Cool aur shaant","Noelle|Paani ka magic|Royal princess|Sharmili aur ghussa"],
+["anime","🪚","Chainsaw Man","Denji|Garib ladka|Chainsaw head|Pochita ke saath","Power|Blood Fiend|Sing wali ladki|Ghamandi aur gandi","Makima|Gulabi-laal baal|Control devil|Rahasyamayi boss","Aki|Devil hunter|Fox aur sword|Serious aur tez"],
+["anime","🪚","Chainsaw Man","Himeno|Ghost devil|Eyepatch|Nasha pasand","Kobeni|Bahut darpok|Dar ke maare lad jaati hai|Chhoti ladki","Kishibe|Sabse bada hunter|Cool aur khatarnak|Gun aur ghane baal","Reze|Bomb devil|Meethi ladki|Dhamaka"],
+["anime","👊","One Punch Man","Saitama|Ganja hero|Ek punch mein jeet|Aasan fights se bore","Genos|Cyborg shishya|Aag jaisa weapon|Saitama ko sensei bolta hai","Garou|Hero hunter|Martial arts expert|Seedha seedha","Bang|Silver Fang|Boodha master|Martial arts"],
+["anime","👊","One Punch Man","Tatsumaki|Chhoti par bahut strong|Psychic powers|Gusse wali","Fubuki|Blizzard of Hell|Hari baal|Group leader","Mumen Rider|Cycle wala hero|Bahut himmat|Bas ek cycle aur himmat","King|Duniya ka sabse bada insaan|Dhadkan ka awaz|Game ka shaukeen"],
+["cartoon","🔔","Doraemon","Doraemon|Neela robot|Jaadui pocket|Dorayaki","Dorami|Peeli aur cute|Doraemon ki behen|Seedhi aur samajhdar","Dekisugi|Class ka topper|Sabko pasand|Tameezdar","Shizuka|Meethi ladki|Violin|Bath"],
+["cartoon","⌚","Ben 10","Gwen|Magic wali cousin|Laal baal|Hamesha daantti hai","Grandpa Max|Plumber|Hero ka dada|Road trip wali RV","Kevin|Energy absorb karta hai|Pehle villain|Cool aur tez","Vilgax|Bade alien warlord|Omnitrix chahta hai|Bahut taqatwar"],
+["cartoon","🍫","Shinchan","Misae|Mummy|Hamesha chillati hai|Kitchen queen","Hiroshi|Papa|Badboo wale moze|Office wala","Himawari|Chhoti behen|Paise ki deewani|Baby","Shiro|Safed kutta|Cotton jaisa|Vafadaar"],
+["cartoon","⚡","Pokemon","Ash|Pokemon master banna chahta hai|Cap pehanta hai|Pikachu ke saath","Gary|Ash ka rival|Ghamandi|Confident","Misty|Water types ki shaukeen|Red baal|Cycle wali","Brock|Gym leader|Hamesha aankhein band|Cook"],
+["cartoon","⚡","Pokemon","Bulbasaur|Grass starter|Peeth pe paudha|Hari","Squirtle|Water starter|Kachhua|Sunglasses wali squad","Snorlax|Bahut bada aur sota hai|Khane ka deewana|Raste mein leta","Gengar|Parchhai jaisa|Dara ke hanste hai|Ghost type"],
+["cartoon","🍡","Chhota Bheem","Dholu|Mota aur bhookha|Bholu ka bhai|Tamasha","Bholu|Patla aur chaalak|Dholu ka bhai|Musibat mein","Jaggu|Bandar|Bheem ka dost|Ped pe chadhta hai","Raja Indravarma|Dholakpur ka raja|Bheem ko sammaan|Taaj"]
+];
+const X=[
+["anime","💥","Gojo,Saitama,Goku,Beerus"],["anime","🗡️","Levi,Zoro,Giyu,Kenshin"],["anime","🔥","Naruto,Luffy,Asta,Yuji"],["anime","😤","Vegeta,Sasuke,Yuno"],["anime","🧠","L,Light,Lelouch"],["anime","😈","Frieza,Muzan,Sukuna,Madara"],["anime","💪","Mikasa,Maki,Nobara,Sakura"],["anime","🎓","Kakashi,Gojo,Jiraiya,Roshi,Bang"],["anime","😨","Zenitsu,Usopp,Kobeni"],
+["cartoon","😡","Gian,Kalia,Suneo"],["cartoon","🐾","Doraemon,Pikachu"],["cartoon","🧒","Shinchan,Hagemaru"],["cartoon","😴","Nobita,Kenichi"],["cartoon","🍖","Motu,Bheem,Dholu"],["cartoon","🤓","Patlu,Dekisugi,Kazama"],["cartoon","👿","John the Don,Dr Jhatka,Vilgax,Kemumaki"],["cartoon","👧","Chutki,Shizuka,Gwen,Misty"],["cartoon","😏","Suneo,Gary,Kevin"],
+["mixed","🐾","Pikachu,Chopper,Doraemon"],["mixed","🍖","Luffy,Goku,Motu,Bheem"],["mixed","😤","Vegeta,Sasuke,Gary"],["mixed","🥷","Naruto,Hattori"]
+];
+const LK={};D.forEach(g=>g.slice(3).forEach(e=>{const n=e.split('|')[0];if(!LK[n])LK[n]=e}));
+const CATS=[["anime","Anime","Naruto, DBZ, AoT…"],["cartoon","Cartoons","Doraemon, Bheem…"],["things","Things","Milk, pen, bus…"],["mixed","Mixed","Everything together"]];
+const app=document.getElementById('app');
+let S={n:5,names:[],cat:'mixed',odd:1,x:1};
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function clr(){app.replaceChildren();window.scrollTo(0,0)}
+function shuf(a){return a.slice().sort(()=>Math.random()-.5)}
+function nm(k){return (S.names[k]||'').trim()||('Player '+(k+1))}
+function av(e,s,seed){const a=el('div','av'+(s?' s':''),e);const h=[...seed].reduce((x,c)=>x+c.charCodeAt(0),0)%360;a.style.background='linear-gradient(135deg,hsl('+h+',80%,70%),hsl('+(h+50)+',80%,60%))';return a}
+function hero(){const h=el('div','hero');h.append(el('h1',0,'🕵️ Odd One Out'),el('p',0,'Pass the phone. Find the player with the different character.'));app.append(h)}
+function setup(){
+ clr();hero();
+ let c=el('div','card');c.append(el('span','t','Players'));
+ const r=el('div','row'),m=el('button','sm alt','−'),p=el('button','sm alt','+');
+ m.onclick=()=>{if(S.n>3){S.n--;setup()}};p.onclick=()=>{if(S.n<12){S.n++;setup()}};
+ r.append(m,el('div','cnt',S.n),p);c.append(r);app.append(c);
+ c=el('div','card');c.append(el('span','t','Names (optional)'));
+ for(let k=0;k<S.n;k++){const i=el('input');i.placeholder='Player '+(k+1);i.maxLength=14;i.value=S.names[k]||'';i.oninput=()=>S.names[k]=i.value;c.append(i)}
+ app.append(c);
+ c=el('div','card');c.append(el('span','t','Category (same for all)'));
+ const g=el('div','g2');
+ CATS.forEach(([k,a,b])=>{const x=el('button','alt'+(S.cat==k?' sel':''),a);x.append(el('small',0,b));x.onclick=()=>{S.cat=k;setup()};g.append(x)});
+ c.append(g);app.append(c);
+ if(S.n<5)S.odd=1;
+ c=el('div','card');c.append(el('span','t','Odd players'));
+ const q=el('div','row');[1,2].forEach(v=>{const x=el('button','alt'+(S.odd==v?' sel':''),v==2&&S.n<5?'2 (needs 5+)':v+' odd');x.onclick=()=>{if(v==2&&S.n<5)return;S.odd=v;setup()};q.append(x)});
+ c.append(q);app.append(c);
+ c=el('div','card');c.append(el('span','t','Cross-show odd one'));
+ const xr=el('div','row');[[1,'On'],[0,'Off']].forEach(([v,l])=>{const x=el('button','alt'+(S.x==v?' sel':''),l);x.onclick=()=>{S.x=v;setup()};xr.append(x)});
+ c.append(xr,el('p','note','On: odd one can get the most similar character from another show. Off: same show only.'));app.append(c);
+ const go=el('button',0,'▶ Start Game');go.onclick=start;app.append(go);
+}
+function start(){
+ const cl=S.x?X.filter(c=>S.cat=='mixed'||c[0]==S.cat):[];
+ const nm0=S.cat=='mixed'?D.filter(g=>g[0]=='things'):D.filter(g=>g[0]==S.cat);
+ const pool=cl.length?cl.concat(S.cat=='mixed'?nm0:[]):(S.cat=='mixed'?D:nm0);
+ const g=pool[Math.floor(Math.random()*pool.length)];
+ let a,b;
+ if(typeof g[2]=='string'&&g.length==3){
+  const [x,y]=shuf(g[2].split(',')).slice(0,2);a=LK[x].split('|');b=LK[y].split('|');S.g=[g[0],g[1],'Cross-show round'];
+ }else{
+  const it=g.slice(3),q=it.length>3?2*Math.floor(Math.random()*Math.floor(it.length/2)):Math.floor(Math.random()*(it.length-1));
+  [a,b]=shuf([it[q],it[q+1]]).map(s=>s.split('|'));S.g=g;
+ }
+ S.real=a;S.oddc=b;
+ S.oddi=shuf([...Array(S.n).keys()]).slice(0,S.odd);
+ S.words=[...Array(S.n).keys()].map(k=>S.oddi.includes(k)?b:a);
+ S.i=0;S.first=Math.floor(Math.random()*S.n);S.votes=[];S.vi=0;
+ cover();
+}
+function cover(){
+ clr();
+ const c=el('div','card big');
+ c.append(av('🙈',0,nm(S.i)),el('h2',0,nm(S.i)),el('p','sub','Only you should look. Play dabao apna character dekhne ke liye.'));
+ const b=el('button',0,'Play');b.onclick=reveal1;c.append(b);
+ app.append(el('p','note','Player '+(S.i+1)+' of '+S.n),c);
+}
+function reveal1(){
+ clr();
+ const w=S.words[S.i],c=el('div','card');
+ c.append(av(w[0][0],0,w[0]),el('div','word',w[0]),el('div','show',S.g[2]),el('span','t','Tumhare clues'));
+ w.slice(1).forEach(h=>c.append(el('div','clue',h)));
+ app.append(c);
+ const b=el('button',0,'✔ Done');b.onclick=()=>{S.i++;S.i<S.n?cover():talk()};app.append(b);
+}
+function talk(){
+ clr();
+ const c=el('div','card big');
+ c.append(av('💬',0,'talk'),el('h2',0,'Discuss!'),el('p','sub',nm(S.first)+' starts. Each player gives one clue about their character without saying the name. Then vote.'));
+ const b=el('button','pink','🗳️ Start Voting');b.onclick=()=>{S.vi=0;S.votes=[];vcover()};c.append(b);app.append(c);
+}
+function vcover(){
+ clr();
+ const c=el('div','card big');
+ c.append(av('🗳️',0,nm(S.vi)),el('h2',0,nm(S.vi)),el('p','sub','Your turn to vote. Tap Vote when you are holding the phone.'));
+ const b=el('button',0,'Vote');b.onclick=vpick;c.append(b);
+ app.append(el('p','note','Vote '+(S.vi+1)+' of '+S.n),c);
+}
+function vpick(){
+ clr();
+ const c=el('div','card');c.append(el('span','t','Who is the odd one?'));
+ const l=el('div','vlist');
+ for(let k=0;k<S.n;k++){if(k==S.vi)continue;
+  const b=el('button','alt');b.append(av(['🦊','🐼','🐯','🐸','🦁','🐵','🐙','🦄','🐧','🐲','🦉','🐰'][k],1,nm(k)),el('span',0,nm(k)));
+  b.onclick=()=>{S.votes.push(k);S.vi++;S.vi<S.n?vcover():results()};l.append(b)}
+ c.append(l);app.append(c);
+}
+function results(){
+ clr();
+ const t=Array(S.n).fill(0);S.votes.forEach(v=>t[v]++);
+ const mx=Math.max(...t),top=t.map((v,k)=>v==mx?k:-1).filter(k=>k>=0);
+ const caught=top.length==1&&S.oddi.includes(top[0]);
+ let c=el('div','card res');
+ c.append(el('div','w '+(caught?'ok':'bad'),caught?'🎉 Pakda gaya Mc!':'😈 Chutiya kaat diya sabka!'));
+ const ob=el('div','oddbox');ob.append(el('small',0,'🕵️ Odd '+(S.oddi.length>1?'players':'player')),el('b',0,S.oddi.map(nm).join(' & ')));c.append(ob);c.append(el('span','t','Vote results'));
+ t.forEach((v,k)=>{const r=el('div');r.style.textAlign='left';r.style.marginBottom='8px';r.append(el('div',0,nm(k)+' — '+v+(v==1?' vote':' votes')));const b=el('div','bar');b.style.width=(mx?v/mx*100:0)+'%';r.append(b);c.append(r)});
+ app.append(c);
+ c=el('div','card res');
+ c.append(av(S.real[0][0],0,S.real[0]),el('span','t','Everyone else had'),el('div','w',S.real[0]),el('span','t','Odd '+(S.oddi.length>1?'players':'player')+' had'),el('div','w',S.oddc[0]),(()=>{const o=el('div','oddbox');o.append(el('small',0,'🕵️ Odd '+(S.oddi.length>1?'players':'player')),el('b',0,S.oddi.map(nm).join(' & ')));return o})());
+ app.append(c);
+ const a=el('button',0,'🔁 Play Again');a.onclick=start;
+ const s=el('button','alt','⚙️ Settings');s.style.marginTop='8px';s.onclick=setup;app.append(a,s);
+}
+setup();
+</script></body></html>
